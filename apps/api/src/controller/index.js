@@ -1,3 +1,7 @@
 // import controller here
 // examp : const usersController = require("./users");
-module.exports = {};
+
+const employeesController = require("./employees");
+module.exports = {
+  employeesController,
+};
