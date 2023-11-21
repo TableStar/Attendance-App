@@ -5,6 +5,22 @@ const { templateResSuccess, templateResError } = require("../helper/utilities");
 const jwt = require("jsonwebtoken");
 const { Op } = require("sequelize");
 module.exports = {
+  getAllEmployee: async (req, res, next) => {
+    console.log(req.query?.offset);
+    try {
+      const result = await employees.findAll({
+        offset: parseInt(req.query?.offset) || 0,
+        limit: 8,
+        raw: true,
+        exclude: ["password"],
+      });
+      return res
+        .status(200)
+        .send(templateResSuccess(true, "get employee success", result));
+    } catch (error) {
+      console.log(error);
+    }
+  },
   login: async (req, res, next) => {
     // const transaction = await db.sequelize.transaction();
     try {
@@ -130,10 +146,16 @@ module.exports = {
     }
   },
   deleteEmployee: async (req, res, next) => {
+    const transaction = await db.sequelize.transaction();
     try {
-      
+      await employees.destroy({ where: { id: req.params.id } });
+      await transaction.commit();
+      return res
+        .status(200)
+        .send(templateResSuccess(true, "Employee deletion success", null));
     } catch (error) {
-      
+      console.log(error);
+      await transaction.rollback();
     }
   },
 };
