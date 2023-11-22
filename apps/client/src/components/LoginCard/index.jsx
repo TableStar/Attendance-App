@@ -28,10 +28,7 @@ export function LoginCard() {
       });
       localStorage.setItem("token", result.data.result.token);
       dispatch(login(result.data.result));
-
-      if (result.data.result.role === "humanResource") {
-        navigate("/");
-      }
+      navigate("/");
     } catch (error) {
       console.log(error);
     }
@@ -51,20 +48,25 @@ export function LoginCard() {
         </Typography>
       </CardHeader>
       <CardBody className="flex flex-col gap-4">
-        <Input
-          label="Username"
-          onChange={(e) => {
-            setInUsername(e.target.value);
-          }}
-          size="lg"
-        />
-        <Input
-          label="Password"
-          onChange={(e) => {
-            setInPassword(e.target.value);
-          }}
-          size="lg"
-        />
+        <form className="flex flex-col gap-4">
+          <Input
+            label="Username"
+            autoComplete="username"
+            onChange={(e) => {
+              setInUsername(e.target.value);
+            }}
+            size="lg"
+          />
+          <Input
+            label="Password"
+            type="password"
+            autoComplete="current-password"
+            onChange={(e) => {
+              setInPassword(e.target.value);
+            }}
+            size="lg"
+          />
+        </form>
       </CardBody>
       <CardFooter className="pt-0">
         <Button fullWidth onClick={onHandleLogin} className=" bg-red-600">

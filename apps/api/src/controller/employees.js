@@ -10,9 +10,9 @@ module.exports = {
     try {
       const result = await employees.findAll({
         offset: parseInt(req.query?.offset) || 0,
-        limit: 8,
+        limit: 10,
         raw: true,
-        exclude: ["password"],
+        attributes: { exclude: ["password"] },
       });
       return res
         .status(200)
@@ -123,10 +123,14 @@ module.exports = {
       if (!result) {
         throw { rc: 404, message: "Employee not found" };
       }
-      await employees.update(req.body, {
-        where: { id: req.params.id },
-        transaction,
-      });
+      const hashedPass = await bcrypt.hash(req.body.password, 10);
+      await employees.update(
+        { ...req.body, password: hashedPass },
+        {
+          where: { id: req.params.id },
+          transaction,
+        }
+      );
       await transaction.commit();
       return res
         .status(200)
@@ -156,6 +160,63 @@ module.exports = {
     } catch (error) {
       console.log(error);
       await transaction.rollback();
+    }
+  },
+  keepLogin: async (req, res, next) => {
+    try {
+      const result = await employees.findOne({
+        where: { id: req.userData.id },
+        raw: true,
+      });
+      const { id, username, email, role } = result;
+      const token = jwt.sign({ id, role }, process.env.SCRT_TOKEN, {
+        expiresIn: "6h",
+      });
+      return res
+        .status(200)
+        .send({ success: true, result: { username, role, token } });
+    } catch (error) {
+      console.log(error);
+      next(templateResError(null, true, "error keeping Login", null));
+    }
+  },
+  editStatus: async (req, res, next) => {
+    const transaction = await db.sequelize.transaction();
+    try {
+      const result = await employees.findOne({
+        where: { id: req.params.id },
+        raw: true,
+      });
+      if (!result) {
+        throw { rc: 404, message: "Employee not found" };
+      }
+      if (result.status.includes("enable")) {
+        await employees.update(
+          { status: "disabled" },
+          { where: { id: req.params.id }, transaction }
+        );
+      } else {
+        await employees.update(
+          { status: "enabled" },
+          { where: { id: req.params.id }, transaction }
+        );
+      }
+      await transaction.commit();
+      return res
+        .status(200)
+        .send(templateResSuccess(true, "Edit status success", null));
+    } catch (error) {
+      console.log(error);
+      await transaction.rollback();
+      next(
+        templateResError(
+          error.rc,
+          false,
+          "Edit status failed",
+          error.message,
+          null
+        )
+      );
     }
   },
 };

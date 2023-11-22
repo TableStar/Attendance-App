@@ -7,10 +7,12 @@ import { LoginCard } from "./components/LoginCard";
 import { Route, Routes } from "react-router-dom";
 import LoginPage from "./pages/loginPage";
 import LandingPage from "./pages/Landing";
+import HRPage from "./pages/HR-Page";
 function App() {
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
+      <Route path="/humanres" element={<HRPage />} />
       <Route path="/auth/login" element={<LoginPage />} />
     </Routes>
   );
