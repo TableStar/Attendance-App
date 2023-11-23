@@ -15,8 +15,10 @@ app.get("/api", (req, res) => {
 });
 
 // #define route here
-const { employeesRouter, attendancesRouter } = require("./router");
+
+const { employeesRouter, forgottenRouter,attendancesRouter } = require("./router");
 app.use("/api/auths", employeesRouter);
+app.use("/api/forgot", forgottenRouter);
 app.use("/api/attendances", attendancesRouter)
 
 // not found

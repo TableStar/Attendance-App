@@ -9,6 +9,7 @@ import LoginPage from "./pages/loginPage";
 import LandingPage from "./pages/Landing";
 import HRPage from "./pages/HR-Page";
 import AttendancePage from "./pages/AttendancePage";
+import { PassResetForm } from "./pages/PassResetPage";
 import { keepLogin } from "./redux/slice/employeeSlice";
 import { useDispatch } from "react-redux";
 import AttendanceLogPage from "./pages/AttendanceLogPage";
@@ -22,6 +23,7 @@ function App() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/humanres" element={<HRPage />} />
       <Route path="/auth/login" element={<LoginPage />} />
+      <Route path="/auth/forgotpass" element={<PassResetForm />} />
       <Route path="/attendance" element={<AttendancePage />} />
       <Route path="/attendance/log" element={<AttendanceLogPage />} />
     </Routes>

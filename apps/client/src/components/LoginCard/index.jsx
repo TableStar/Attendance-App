@@ -14,12 +14,15 @@ import { API_URL } from "../../helper";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login } from "../../redux/slice/employeeSlice";
+import { ForgotPassForm } from "../ForgotPassForm";
 
 export function LoginCard() {
   const [inUsername, setInUsername] = useState("");
   const [inPassword, setInPassword] = useState("");
+  const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const handleOpen = () => setOpen(!open);
   const onHandleLogin = async () => {
     try {
       const result = await axios.post(API_URL + "/api/auths/login", {
@@ -76,15 +79,21 @@ export function LoginCard() {
           Forgot password?
           <Typography
             as="a"
-            href="#signup"
             variant="small"
             color="blue-gray"
             className="ml-1 font-bold hover:underline hover:cursor-pointer"
+            onClick={handleOpen}
           >
             Click here
           </Typography>
         </Typography>
       </CardFooter>
+      <ForgotPassForm
+        open={open}
+        handleOpen={() => {
+          handleOpen();
+        }}
+      />
     </Card>
   );
 }

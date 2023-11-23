@@ -1,4 +1,4 @@
-const jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken")
 module.exports = {
   validateToken: (req, res, next) => {
     try {
@@ -21,6 +21,18 @@ module.exports = {
     } catch (error) {
       console.log(error);
       return res.status(400).send({ success: false, message: "Invalid token" });
+    }
+  },
+  validatePass: async (req, res, next) => {
+    if (
+      req.body.password?.length < 8 ||
+      req.body.password !== req.body.passwordConfirm
+    ) {
+      return res
+        .status(400)
+        .send({ success: false, message: "Your password is invalid" });
+    } else {
+      next();
     }
   },
 };
