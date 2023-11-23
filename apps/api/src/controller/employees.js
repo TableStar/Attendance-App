@@ -6,19 +6,32 @@ const jwt = require("jsonwebtoken");
 const { Op } = require("sequelize");
 module.exports = {
   getAllEmployee: async (req, res, next) => {
-    console.log(req.query?.offset);
+    // console.log(req.query?.offset);
     try {
       const result = await employees.findAll({
+        where: req.query,
         offset: parseInt(req.query?.offset) || 0,
         limit: 10,
         raw: true,
         attributes: { exclude: ["password"] },
       });
+      if (!result.length) {
+        throw { rc: 401, message: "employee not found" };
+      }
       return res
         .status(200)
         .send(templateResSuccess(true, "get employee success", result));
     } catch (error) {
       console.log(error);
+      next(
+        templateResError(
+          error.rc,
+          false,
+          "error fetching employee data",
+          error.message,
+          null
+        )
+      );
     }
   },
   login: async (req, res, next) => {
@@ -123,14 +136,10 @@ module.exports = {
       if (!result) {
         throw { rc: 404, message: "Employee not found" };
       }
-      const hashedPass = await bcrypt.hash(req.body.password, 10);
-      await employees.update(
-        { ...req.body, password: hashedPass },
-        {
-          where: { id: req.params.id },
-          transaction,
-        }
-      );
+      await employees.update(req.body, {
+        where: { id: req.params.id },
+        transaction,
+      });
       await transaction.commit();
       return res
         .status(200)
@@ -213,6 +222,32 @@ module.exports = {
           error.rc,
           false,
           "Edit status failed",
+          error.message,
+          null
+        )
+      );
+    }
+  },
+  editPass: async (req, res, next) => {
+    try {
+      if (req.userData) {
+        const salt = await bcrypt.genSalt(10);
+        const hashPassword = await bcrypt.hash(req.body.password, salt);
+        await employees.update(
+          { password: hashPassword },
+          { where: { id: req.userData.id } }
+        );
+        return res
+          .status(200)
+          .send({ success: true, message: "password change success" });
+      }
+    } catch (error) {
+      console.log(error);
+      next(
+        templateResError(
+          error.rc,
+          false,
+          "error changing password",
           error.message,
           null
         )

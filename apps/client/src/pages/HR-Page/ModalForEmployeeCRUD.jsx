@@ -8,6 +8,8 @@ import {
   Input,
   Textarea,
   Typography,
+  Select,
+  Option,
 } from "@material-tailwind/react";
 import axios from "axios";
 import { API_URL } from "../../helper";
@@ -18,11 +20,12 @@ import { useSelector } from "react-redux";
 export function ModalForEmployeeCRUD(props) {
   const employee = useSelector((state) => state.employeeListReducer);
   const [inUsername, setInUsername] = useState();
-  const [inPassword, setInPassword] = useState();
+  const [inRole, setInRole] = useState();
   const [inEmail, setInEmail] = useState();
+  const [inPassword, setInPassword] = useState();
   const dispatch = useDispatch();
   console.log(props.addOrEdit);
-  console.log(inUsername);
+  console.log(inRole);
   const onClickSubmit = async (addOrEdit) => {
     try {
       if (addOrEdit !== 0) {
@@ -32,8 +35,8 @@ export function ModalForEmployeeCRUD(props) {
           API_URL + `/api/auths/${addOrEdit}`,
           {
             username: inUsername,
-            password: inPassword,
             email: inEmail,
+            role: inRole,
           },
           {
             headers: {
@@ -132,6 +135,34 @@ export function ModalForEmployeeCRUD(props) {
               }}
               defaultValue={employee[index]?.email}
             />
+            {props.addOrEdit === 0 ? (
+              <Input
+                label="Password"
+                s
+                onChange={(e) => {
+                  setInPassword(e.target.value);
+                }}
+              />
+            ) : (
+              ""
+            )}
+
+            <Select label="Select Version">
+              <Option
+                onClick={() => {
+                  setInRole("employee");
+                }}
+              >
+                Employee
+              </Option>
+              <Option
+                onClick={() => {
+                  setInRole("humanResource");
+                }}
+              >
+                Human Resource
+              </Option>
+            </Select>
           </div>
         </DialogBody>
         <DialogFooter className="space-x-2">
