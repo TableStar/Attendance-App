@@ -15,6 +15,7 @@ module.exports = {
         raw: true,
         attributes: { exclude: ["password"] },
       });
+
       if (!result.length) {
         throw { rc: 401, message: "employee not found" };
       }

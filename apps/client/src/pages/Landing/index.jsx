@@ -11,14 +11,12 @@ const LandingPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    dispatch(keepLogin());
-  }, []);
+  
   console.log("🚀 ~ file: index.jsx:5 ~ LandingPage ~ employee:", employee);
   return (
     <div className="px-10 py-10">
       <div className="min-h-screen w-full flex flex-col content-center">
-        <Typography variant="h2">Welcome, {employee.username.split("-")[2]}</Typography>
+        <Typography variant="h2">Welcome, {employee.username.split("-")[2] || employee.username}</Typography>
         <ButtonGroup
           size="lg"
           color="red"
@@ -32,7 +30,7 @@ const LandingPage = () => {
           >
             Employee Management
           </Button>
-          <Button>B</Button>
+          <Button onClick={() => {navigate("/attendance")}}>Live Attendance</Button>
           <Button>C</Button>
         </ButtonGroup>
       </div>

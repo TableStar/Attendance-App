@@ -15,9 +15,11 @@ app.get("/api", (req, res) => {
 });
 
 // #define route here
-const { employeesRouter, forgottenRouter } = require("./router");
+
+const { employeesRouter, forgottenRouter,attendancesRouter } = require("./router");
 app.use("/api/auths", employeesRouter);
 app.use("/api/forgot", forgottenRouter);
+app.use("/api/attendances", attendancesRouter)
 
 // not found
 app.use((req, res, next) => {
@@ -32,7 +34,7 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
   if (req.path.includes("/api/")) {
     console.error("Error : ", err);
-    res.status(500).send(err);
+    res.status(err.rc || 500).send(err);
   } else {
     next();
   }
