@@ -9,14 +9,22 @@ module.exports = {
     console.log(req.query?.offset);
     try {
       const result = await employees.findAll({
+        where: req.query,
         offset: parseInt(req.query?.offset) || 0,
         limit: 10,
         raw: true,
         attributes: { exclude: ["password"] },
       });
-      return res
-        .status(200)
-        .send(templateResSuccess(true, "get employee success", result));
+      if (result.length) {
+        return res
+          .status(200)
+          .send(templateResSuccess(true, "get employee success", result));
+      } else {
+        return res.status(404).send({
+          success: false,
+          message: "Employee not found."
+        })
+      }
     } catch (error) {
       console.log(error);
     }

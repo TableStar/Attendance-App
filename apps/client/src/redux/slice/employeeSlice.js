@@ -15,7 +15,6 @@ const employeeSlice = createSlice({
       state.token = localStorage.getItem("token");
       state.username = action.payload.username;
       state.role = action.payload.role;
-      console.log(state);
     },
     logout: (state, action) => {
       return (state = {
@@ -35,7 +34,6 @@ export const keepLogin = () => {
       const response = await axios.get(API_URL + "/api/auths/keeplogin", {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
-      console.log(response);
       localStorage.setItem("token",response.data.result.token);
       dispatch(login(response.data.result));
     } catch (error) {
