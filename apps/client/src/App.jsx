@@ -11,6 +11,7 @@ import HRPage from "./pages/HR-Page";
 import AttendancePage from "./pages/AttendancePage";
 import { keepLogin } from "./redux/slice/employeeSlice";
 import { useDispatch } from "react-redux";
+import AttendanceLogPage from "./pages/AttendanceLogPage";
 function App() {
   const dispatch = useDispatch()
   useEffect(() => {
@@ -22,6 +23,7 @@ function App() {
       <Route path="/humanres" element={<HRPage />} />
       <Route path="/auth/login" element={<LoginPage />} />
       <Route path="/attendance" element={<AttendancePage />} />
+      <Route path="/attendance/log" element={<AttendanceLogPage />} />
     </Routes>
   );
 }
